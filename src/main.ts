@@ -8,14 +8,14 @@ import * as functions from 'firebase-functions';
 import { AppModule } from '@src/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   await app.listen(4000);
-  app.setGlobalPrefix('api');
-  app.enableCors({ origin: true });
+  // app.setGlobalPrefix('api');
+  // app.enableCors();
 }
 
 bootstrap();
-
+//
 // const server = express();
 //
 // export const createNestServer = async (expressInstance) => {
@@ -24,7 +24,7 @@ bootstrap();
 //     new ExpressAdapter(expressInstance),
 //   );
 //   // app.setGlobalPrefix('api');
-//   app.enableCors({ origin: true });
+//   // app.enableCors({ origin: true });
 //
 //   return app.init();
 // };
