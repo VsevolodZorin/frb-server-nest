@@ -10,6 +10,7 @@ import { FirebaseMiddleware } from '@src/common/middleware/firebase.middleware';
 import { FirebaseApp } from '@src/firebase/firebase-app';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoConfig } from '@src/config/mongo.config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { getMongoConfig } from '@src/config/mongo.config';
       useFactory: getMongoConfig,
     }),
     AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
