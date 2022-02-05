@@ -8,18 +8,22 @@ export class FirebaseApp {
 
   constructor(private readonly configService: ConfigService) {
     const firebase_params = {
-      type: this.configService.get('type'),
-      projectId: this.configService.get('project_id'),
-      privateKeyId: this.configService.get('private_key_id'),
-      privateKey: this.configService.get('private_key').replace(/\\n/g, '\n'),
-      clientEmail: this.configService.get('client_email'),
-      clientId: this.configService.get('client_id'),
-      authUri: this.configService.get('auth_uri'),
-      tokenUri: this.configService.get('token_uri'),
+      type: this.configService.get('FIREBASE_type'),
+      projectId: this.configService.get('FIREBASE_project_id'),
+      privateKeyId: this.configService.get('FIREBASE_private_key_id'),
+      privateKey: this.configService
+        .get('FIREBASE_private_key')
+        .replace(/\\n/g, '\n'),
+      clientEmail: this.configService.get('FIREBASE_client_email'),
+      clientId: this.configService.get('FIREBASE_client_id'),
+      authUri: this.configService.get('FIREBASE_auth_uri'),
+      tokenUri: this.configService.get('FIREBASE_token_uri'),
       authProviderX509CertUrl: this.configService.get(
-        'auth_provider_x509_cert_url',
+        'FIREBASE_auth_provider_x509_cert_url',
       ),
-      clientC509CertUrl: this.configService.get('client_x509_cert_url'),
+      clientC509CertUrl: this.configService.get(
+        'FIREBASE_client_x509_cert_url',
+      ),
     };
 
     this.firebaseApp = firebase.initializeApp({

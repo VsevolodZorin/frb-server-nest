@@ -4,7 +4,7 @@ import * as firebase from 'firebase-admin';
 import { FirebaseApp } from '@src/firebase/firebase-app';
 
 @Injectable()
-export class AuthFrbMiddleware implements NestMiddleware {
+export class FirebaseMiddleware implements NestMiddleware {
   private frbAuth: firebase.auth.Auth;
 
   constructor(private firebaseApp: FirebaseApp) {

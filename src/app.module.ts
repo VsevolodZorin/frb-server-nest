@@ -4,22 +4,29 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { AppController } from '@src/app.controller';
-import { AppService } from '@src/app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@src/auth/auth.module';
-import { AuthFrbMiddleware } from '@src/auth/middlewares/authFrb.middleware';
-import { UserModule } from './user/user.module';
+import { FirebaseMiddleware } from '@src/common/middleware/firebase.middleware';
 import { FirebaseApp } from '@src/firebase/firebase-app';
+import { TypegooseModule } from 'nestjs-typegoose';
+import { getMongoConfig } from '@src/config/mongo.config';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, UserModule],
-  controllers: [AppController],
-  providers: [FirebaseApp, AppService],
+  imports: [
+    ConfigModule.forRoot(),
+    TypegooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getMongoConfig,
+    }),
+    AuthModule,
+  ],
+  controllers: [],
+  providers: [FirebaseApp],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthFrbMiddleware).forRoutes({
+    consumer.apply(FirebaseMiddleware).forRoutes({
       path: '*',
       method: RequestMethod.ALL,
     });
