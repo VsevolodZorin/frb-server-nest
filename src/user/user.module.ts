@@ -10,13 +10,13 @@ import { UserEntity } from '@src/user/user.entity';
       {
         typegooseClass: UserEntity,
         schemaOptions: {
-          // db collection upperCase or lowerCase?
-          collection: 'user',
+          collection: 'users',
         },
       },
     ]),
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

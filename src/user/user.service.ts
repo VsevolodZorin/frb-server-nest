@@ -8,7 +8,8 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(UserEntity) private readonly userEntity: ModelType<UserEntity>,
+    @InjectModel(UserEntity)
+    private readonly userRepository: ModelType<UserEntity>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -16,7 +17,7 @@ export class UserService {
       errors: {},
     };
 
-    const userByEmail = await this.userEntity.findOne({
+    const userByEmail = await this.userRepository.findOne({
       email: createUserDto.email,
     });
     if (userByEmail) {
@@ -24,18 +25,19 @@ export class UserService {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    const newUser = new this.userEntity();
+    const newUser = new this.userRepository();
+    // if password
     Object.assign(newUser, createUserDto);
 
     return await newUser.save();
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<UserEntity> {
+    return await this.userRepository.findById(id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

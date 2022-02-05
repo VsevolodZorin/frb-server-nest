@@ -11,6 +11,8 @@ import { FirebaseApp } from '@src/firebase/firebase-app';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoConfig } from '@src/config/mongo.config';
 import { UserModule } from './user/user.module';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+    RoleModule,
+    PermissionModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
