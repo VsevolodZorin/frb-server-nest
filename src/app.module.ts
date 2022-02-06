@@ -32,9 +32,25 @@ import { PermissionModule } from './permission/permission.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(FirebaseMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
+    consumer
+      .apply(FirebaseMiddleware)
+      .exclude({
+        path: '*',
+        method: RequestMethod.GET,
+      })
+      .forRoutes(
+        {
+          path: '*',
+          method: RequestMethod.POST,
+        },
+        {
+          path: '*',
+          method: RequestMethod.PATCH,
+        },
+        {
+          path: '*',
+          method: RequestMethod.DELETE,
+        },
+      );
   }
 }

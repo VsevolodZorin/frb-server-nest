@@ -7,8 +7,8 @@ export class UserEntity extends TimeStamps {
   @prop({ unique: true })
   email: string;
 
-  @prop()
-  role: string;
+  @prop({ type: () => [String] })
+  roles: string[];
 
   // @prop({ default: '' })
   // passwordHash: string;

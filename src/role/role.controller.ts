@@ -11,12 +11,15 @@ import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleEntity } from '@src/role/role.entity';
+import { Role } from '@src/common/decorators/roles.decorator';
+import { RolesEnum } from '@src/common/types/role.enum';
 
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @Role(RolesEnum.ADMIN)
   async create(@Body() createRoleDto: CreateRoleDto): Promise<RoleEntity> {
     return this.roleService.create(createRoleDto);
   }

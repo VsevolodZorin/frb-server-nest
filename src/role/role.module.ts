@@ -3,6 +3,7 @@ import { RoleService } from './role.service';
 import { RoleController } from './role.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { RoleEntity } from './role.entity';
+import { RolesGuard } from '@src/common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { RoleEntity } from './role.entity';
     ]),
   ],
   controllers: [RoleController],
-  providers: [RoleService],
+  providers: [RoleService, RolesGuard],
   exports: [RoleService],
 })
 export class RoleModule {}
