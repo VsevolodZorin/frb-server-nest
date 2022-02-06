@@ -31,8 +31,8 @@ export class PermissionService {
       errors: {},
     };
     const res = await Promise.all([
-      this.userService.findOne(createPermissionDto.userId),
-      this.roleService.findOne(createPermissionDto.roleId),
+      this.userService.findById(createPermissionDto.userId),
+      this.roleService.findById(createPermissionDto.roleId),
       this.findByUserId(createPermissionDto.userId),
     ] as PromiseAllType);
     console.log('--- PermissionService create res', res);
@@ -57,19 +57,20 @@ export class PermissionService {
     }
 
     const newPermission = new this.permissionRepository(createPermissionDto);
+
     return await newPermission.save();
   }
 
   async findAll(): Promise<PermissionEntity[]> {
-    return await this.permissionRepository.find();
+    return this.permissionRepository.find();
   }
 
   async findOne(id: string): Promise<PermissionEntity> {
-    return await this.permissionRepository.findById(id);
+    return this.permissionRepository.findById(id);
   }
 
   async findByUserId(userId: string): Promise<PermissionEntity> {
-    return await this.permissionRepository.findOne({ userId });
+    return this.permissionRepository.findOne({ userId });
   }
 
   update(id: number, updatePermissionDto: UpdatePermissionDto) {

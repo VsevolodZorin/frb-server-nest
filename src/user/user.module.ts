@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { UserEntity } from '@src/user/user.entity';
+import { RoleModule } from '@src/role/role.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserEntity } from '@src/user/user.entity';
         },
       },
     ]),
+    RoleModule,
   ],
   controllers: [UserController],
   providers: [UserService],

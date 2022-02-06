@@ -6,5 +6,5 @@ export interface RoleEntity extends Base {}
 export class RoleEntity extends TimeStamps {
   // todo add string[]
   @prop({ unique: true, required: true })
-  role: string;
+  name: string;
 }

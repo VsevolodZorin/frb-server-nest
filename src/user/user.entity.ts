@@ -6,4 +6,10 @@ export interface UserEntity extends Base {}
 export class UserEntity extends TimeStamps {
   @prop({ unique: true })
   email: string;
+
+  @prop()
+  role: string;
+
+  // @prop({ default: '' })
+  // passwordHash: string;
 }
