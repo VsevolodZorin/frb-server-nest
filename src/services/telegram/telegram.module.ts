@@ -1,7 +1,7 @@
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 import { TelegramService } from './telegram.service';
-import { ITelegramModuleAsyncOptions } from '@src/telegram/types/telegram.interface';
-import { TELEGRAM_MODULE_OPTIONS } from '@src/telegram/telegram.constants';
+import { ITelegramModuleAsyncOptions } from '@src/services/telegram/types/telegram.interface';
+import { TELEGRAM_MODULE_OPTIONS } from '@src/services/telegram/telegram.constants';
 
 @Global()
 @Module({

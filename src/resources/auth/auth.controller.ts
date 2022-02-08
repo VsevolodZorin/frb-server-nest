@@ -11,16 +11,14 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
-  @Post('frblogin')
-  async loginWithFirebase(
-    @User('email') email: string,
-  ): Promise<IUserResponse> {
-    const user = await this.authService.loginWithFirebase(email);
-    return this.userService.buildUserResponse(user);
-  }
+  // @Post('loginWithFirebase')
+  // async loginWithFirebase(
+  //   @User('email') email: string,
+  // ): Promise<IUserResponse> {
+  //   const user = await this.authService.loginWithFirebase(email);
+  //   return this.userService.buildUserResponse(user);
+  // }
 
-  @Get()
-  get() {
-    return 'auth get';
-  }
+
+
 }

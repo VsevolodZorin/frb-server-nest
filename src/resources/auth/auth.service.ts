@@ -8,10 +8,10 @@ export class AuthService {
 
   async loginWithFirebase(email: string): Promise<UserEntity> {
     // return 'login';
-    let user = await this.userService.findByEmail(email);
-    if (!user) {
-      user = await this.userService.create({ email });
-    }
+    const user = await this.userService.findByEmail(email);
+    // if (!user) {
+    //   user = await this.userService.create({ email });
+    // }
     return user;
   }
 }

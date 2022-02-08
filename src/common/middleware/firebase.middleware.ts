@@ -1,9 +1,9 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as firebase from 'firebase-admin';
-import { FirebaseApp } from '@src/firebase/firebase-app';
+import { FirebaseApp } from '@src/services/firebase/firebase-app';
 import { UserService } from '@src/resources/user/user.service';
-import { TelegramService } from '@src/telegram/telegram.service';
+import { TelegramService } from '@src/services/telegram/telegram.service';
 
 @Injectable()
 export class FirebaseMiddleware implements NestMiddleware {
@@ -24,10 +24,10 @@ export class FirebaseMiddleware implements NestMiddleware {
         .verifyIdToken(token.replace('Bearer ', ''))
         .then(async (decodedToken) => {
           const email = decodedToken.email;
-          let user = await this.userService.findByEmail(email);
-          if (!user) {
-            user = await this.userService.create({ email });
-          }
+          const user = await this.userService.findByEmail(email);
+          // if (!user) {
+          //   user = await this.userService.create({ email });
+          // }
           req['user'] = user;
           console.log('--- firebaseMiddleware user', user);
           const message =
