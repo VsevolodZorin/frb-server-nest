@@ -10,7 +10,7 @@ import {
 import { PermissionService } from './permission.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { PermissionEntity } from '@src/permission/permission.entity';
+import { PermissionEntity } from '@src/resources/permission/permission.entity';
 
 @Controller('permission')
 export class PermissionController {

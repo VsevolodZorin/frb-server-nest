@@ -31,14 +31,15 @@
     "@typegoose/typegoose": "^9.6.0",
     "express": "^4.17.2",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.16.0",
+    "firebase-functions": "^3.17.1",
     "module-alias": "^2.2.2",
     "mongoose": "^6.2.0",
     "nestjs-typegoose": "^7.1.38",
     "nodemon": "^2.0.15",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "telegraf": "^4.7.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

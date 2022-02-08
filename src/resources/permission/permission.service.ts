@@ -3,11 +3,11 @@ import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { PermissionEntity } from '@src/permission/permission.entity';
-import { UserService } from '@src/user/user.service';
-import { RoleService } from '@src/role/role.service';
-import { RoleEntity } from '@src/role/role.entity';
-import { UserEntity } from '@src/user/user.entity';
+import { PermissionEntity } from '@src/resources/permission/permission.entity';
+import { UserService } from '@src/resources/user/user.service';
+import { RoleService } from '@src/resources/role/role.service';
+import { RoleEntity } from '@src/resources/role/role.entity';
+import { UserEntity } from '@src/resources/user/user.entity';
 
 type PromiseAllType = [
   Promise<UserEntity>,

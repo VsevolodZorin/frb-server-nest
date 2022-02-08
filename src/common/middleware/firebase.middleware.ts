@@ -2,7 +2,8 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as firebase from 'firebase-admin';
 import { FirebaseApp } from '@src/firebase/firebase-app';
-import { UserService } from '@src/user/user.service';
+import { UserService } from '@src/resources/user/user.service';
+import { TelegramService } from '@src/telegram/telegram.service';
 
 @Injectable()
 export class FirebaseMiddleware implements NestMiddleware {
@@ -11,6 +12,7 @@ export class FirebaseMiddleware implements NestMiddleware {
   constructor(
     private readonly firebaseApp: FirebaseApp,
     private readonly userService: UserService,
+    private readonly telegramService: TelegramService,
   ) {
     this.frbAuth = firebaseApp.getAuth();
   }
@@ -28,6 +30,11 @@ export class FirebaseMiddleware implements NestMiddleware {
           }
           req['user'] = user;
           console.log('--- firebaseMiddleware user', user);
+          const message =
+            `--- server ---  /n` +
+            `firebaseMiddleware /n` +
+            `email: ${user.email}`;
+          await this.telegramService.sendMessage(message);
           next();
         })
         .catch((error) => {

@@ -10,7 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from '@src/user/user.entity';
+import { UserEntity } from '@src/resources/user/user.entity';
 
 @Controller('user')
 export class UserController {

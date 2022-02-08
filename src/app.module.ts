@@ -5,14 +5,16 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from '@src/auth/auth.module';
+import { AuthModule } from '@src/resources/auth/auth.module';
 import { FirebaseMiddleware } from '@src/common/middleware/firebase.middleware';
 import { FirebaseApp } from '@src/firebase/firebase-app';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoConfig } from '@src/config/mongo.config';
-import { UserModule } from './user/user.module';
-import { RoleModule } from './role/role.module';
-import { PermissionModule } from './permission/permission.module';
+import { UserModule } from './resources/user/user.module';
+import { RoleModule } from './resources/role/role.module';
+import { PermissionModule } from './resources/permission/permission.module';
+import { TelegramModule } from './telegram/telegram.module';
+import { getTelegramConfig } from '@src/config/telegram.config';
 
 @Module({
   imports: [
@@ -26,6 +28,11 @@ import { PermissionModule } from './permission/permission.module';
     UserModule,
     RoleModule,
     PermissionModule,
+    TelegramModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getTelegramConfig,
+    }),
   ],
   controllers: [],
   providers: [FirebaseApp],

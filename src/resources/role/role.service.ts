@@ -3,8 +3,8 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { RoleEntity } from '@src/role/role.entity';
-import { UserEntity } from '@src/user/user.entity';
+import { RoleEntity } from '@src/resources/role/role.entity';
+import { UserEntity } from '@src/resources/user/user.entity';
 
 @Injectable()
 export class RoleService {

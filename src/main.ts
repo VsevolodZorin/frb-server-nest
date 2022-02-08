@@ -9,13 +9,15 @@ import { AppModule } from '@src/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  await app.listen(4000);
+  await app.listen(4000, () => {
+    console.log('server start at port 4000');
+  });
   // app.setGlobalPrefix('api');
   // app.enableCors();
 }
 
 bootstrap();
-//
+
 // const server = express();
 //
 // export const createNestServer = async (expressInstance) => {

@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
-import { UserEntity } from '@src/user/user.entity';
+import { UserEntity } from '@src/resources/user/user.entity';
 import { ModelType } from '@typegoose/typegoose/lib/types';
-import { RoleService } from '@src/role/role.service';
-import { UserResponseInterface } from '@src/user/types/userResponse.Interface';
+import { RoleService } from '@src/resources/role/role.service';
+import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
 import { RolesEnum } from '@src/common/types/role.enum';
 
 @Injectable()
@@ -65,7 +65,7 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  buildUserResponse(user: UserEntity): UserResponseInterface {
+  buildUserResponse(user: UserEntity): IUserResponse {
     const isAdmin = user.roles.includes(RolesEnum.ADMIN);
     return {
       isAdmin,

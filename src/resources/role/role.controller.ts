@@ -10,7 +10,7 @@ import {
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { RoleEntity } from '@src/role/role.entity';
+import { RoleEntity } from '@src/resources/role/role.entity';
 import { Role } from '@src/common/decorators/roles.decorator';
 import { RolesEnum } from '@src/common/types/role.enum';
 
