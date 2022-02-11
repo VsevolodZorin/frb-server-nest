@@ -11,13 +11,16 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '@src/resources/user/user.entity';
+import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
+import { User } from '@src/common/decorators/user.decorator';
+import { UserType } from '@src/resources/user/types/user.types';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserType> {
     return this.userService.create(createUserDto);
   }
 
@@ -31,13 +34,23 @@ export class UserController {
     return this.userService.findById(id);
   }
 
+  @Patch()
+  async updateCurrentUser(
+    @User('_id') currentUserId: string,
+    @Body('user') updateUserDto: UpdateUserDto,
+  ): Promise<IUserResponse> {
+    const user = await this.userService.update(currentUserId, updateUserDto);
+    return this.userService.buildUserResponse(user);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.userService.update(id, updateUserDto);
+    const user = await this.userService.update(id, updateUserDto);
+    return this.userService.buildUserResponse(user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.userService.remove(id);
   }
 }

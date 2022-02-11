@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { UserEntity } from '@src/resources/user/user.entity';
 import { RoleModule } from '@src/resources/role/role.module';
+import { JwtModule } from '@src/services/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RoleModule } from '@src/resources/role/role.module';
       },
     ]),
     RoleModule,
+    JwtModule,
   ],
   controllers: [UserController],
   providers: [UserService],
