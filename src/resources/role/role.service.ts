@@ -4,7 +4,6 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { RoleEntity } from '@src/resources/role/role.entity';
-import { UserEntity } from '@src/resources/user/user.entity';
 
 @Injectable()
 export class RoleService {
@@ -18,9 +17,11 @@ export class RoleService {
       errors: {},
     };
 
-    const roleByName = await this.roleRepository.findOne({
-      name: createRoleDto.name,
-    });
+    const roleByName = await this.roleRepository
+      .findOne({
+        name: createRoleDto.name,
+      })
+      .exec();
     if (roleByName) {
       errorResponse.errors['role'] = 'has already been taken';
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -31,7 +32,7 @@ export class RoleService {
   }
 
   async findAll(): Promise<RoleEntity[]> {
-    return await this.roleRepository.find();
+    return await this.roleRepository.find().exec();
   }
 
   // async findOne(id: string): Promise<RoleEntity> {
@@ -39,11 +40,11 @@ export class RoleService {
   // }
 
   async findById(id: string): Promise<RoleEntity> {
-    return await this.roleRepository.findById(id);
+    return await this.roleRepository.findById(id).exec();
   }
 
   async findByName(name: string): Promise<RoleEntity> {
-    return await this.roleRepository.findOne({ name });
+    return await this.roleRepository.findOne({ name }).exec();
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {

@@ -8,11 +8,8 @@ import { RoleService } from '@src/resources/role/role.service';
 import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
 import { RolesEnum } from '@src/common/types/role.enum';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
-import { JwtService } from '@src/services/jwt/jwt.service';
-import { IJwtPayload } from '@src/services/jwt/types/jwtPayload.interface';
-import { Response } from 'express';
+
 import { genSalt, hash } from 'bcryptjs';
-import { UserType } from '@src/resources/user/types/user.types';
 
 @Injectable()
 export class UserService {
@@ -20,10 +17,9 @@ export class UserService {
     @InjectModel(UserEntity)
     private readonly userRepository: ModelType<UserEntity>,
     private readonly roleService: RoleService,
-    private readonly jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserType> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const errorResponse = {
       errors: {},
     };
@@ -47,8 +43,8 @@ export class UserService {
     // TODO role name or id
     const newUser = new this.userRepository();
 
-    // const salt = genSalt(10);
-    const passwordHash = await hash(createUserDto.password, 10);
+    const salt = await genSalt(10);
+    const passwordHash = await hash(createUserDto.password, salt);
 
     Object.assign(
       newUser,
@@ -92,11 +88,17 @@ export class UserService {
     return await this.userRepository.findByIdAndDelete(id).exec();
   }
 
-  buildUserResponse(user: UserType): IUserResponse {
-    const tokenPair = this.jwtService.generateTokenPair(user);
-    const accessToken = tokenPair.accessToken;
+  buildUserResponse(user: UserEntity, accessToken?: string): IUserResponse {
+    const { _id, id, email, firstName, lastName, roles } = user;
     return {
-      user,
+      user: {
+        _id,
+        id,
+        email,
+        firstName,
+        lastName,
+        roles,
+      },
       accessToken,
     };
   }

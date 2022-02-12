@@ -15,6 +15,9 @@ import { RoleModule } from './resources/role/role.module';
 import { PermissionModule } from './resources/permission/permission.module';
 import { TelegramModule } from './services/telegram/telegram.module';
 import { getTelegramConfig } from '@src/config/telegram.config';
+import { AuthMiddleware } from '@src/common/middleware/auth.middleware';
+import { JwtModule } from '@src/services/jwt/jwt.module';
+import { SessionModule } from '@src/resources/session/sessoin.module';
 
 @Module({
   imports: [
@@ -33,6 +36,8 @@ import { getTelegramConfig } from '@src/config/telegram.config';
       inject: [ConfigService],
       useFactory: getTelegramConfig,
     }),
+    SessionModule,
+    JwtModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
@@ -40,11 +45,12 @@ import { getTelegramConfig } from '@src/config/telegram.config';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(FirebaseMiddleware)
-      .exclude({
-        path: '*',
-        method: RequestMethod.GET,
-      })
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: '/auth/registration', method: RequestMethod.POST },
+        { path: '/auth/login', method: RequestMethod.POST },
+        // { path: '/auth/refresh', method: RequestMethod.POST },
+      )
       .forRoutes(
         {
           path: '*',
@@ -59,5 +65,25 @@ export class AppModule implements NestModule {
           method: RequestMethod.DELETE,
         },
       );
+    // consumer
+    //   .apply(FirebaseMiddleware)
+    //   .exclude({
+    //     path: '*',
+    //     method: RequestMethod.GET,
+    //   })
+    //   .forRoutes(
+    //     {
+    //       path: '*',
+    //       method: RequestMethod.POST,
+    //     },
+    //     {
+    //       path: '*',
+    //       method: RequestMethod.PATCH,
+    //     },
+    //     {
+    //       path: '*',
+    //       method: RequestMethod.DELETE,
+    //     },
+    //   );
   }
 }

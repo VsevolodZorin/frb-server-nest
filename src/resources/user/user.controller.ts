@@ -24,6 +24,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  // todo not public
   @Get()
   async findAll(): Promise<UserEntity[]> {
     return this.userService.findAll();

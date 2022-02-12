@@ -4,19 +4,24 @@ import { UserEntity } from '@src/resources/user/user.entity';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
 import { compareSync } from 'bcryptjs';
+import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
+import { JwtService } from '@src/services/jwt/jwt.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async loginWithFirebase(email: string): Promise<UserEntity> {
-    // return 'login';
-    const user = await this.userService.findByEmail(email);
-    // if (!user) {
-    //   user = await this.userService.create({ email });
-    // }
-    return user;
-  }
+  // async loginWithFirebase(email: string): Promise<UserEntity> {
+  // return 'login';
+  // const user = await this.userService.findByEmail(email);
+  // if (!user) {
+  //   user = await this.userService.create({ email });
+  // }
+  // return user;
+  // }
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const errorResponse = {
@@ -30,23 +35,20 @@ export class AuthService {
       createdAt: 0,
       updatedAt: 0,
     };
-
     const user = await this.userService.findByEmail(
       loginUserDto.email,
       userFindOptions,
     );
-
     if (!user) {
       //     FORBIDDEN = 403,
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    // const isPasswordCorrect = compareSync(loginUserDto.password, user.password);
-    // if (!isPasswordCorrect) {
-    //   //     FORBIDDEN = 403,
-    //   throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
-    // }
+    const isPasswordCorrect = compareSync(loginUserDto.password, user.password);
+    if (!isPasswordCorrect) {
+      //     FORBIDDEN = 403,
+      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 
-    delete user.password;
     return user;
   }
 
@@ -58,7 +60,17 @@ export class AuthService {
     return;
   }
 
-  async refresh() {
-    return;
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'unauthorized',
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const jwtPayload = await this.jwtService.validateRefreshToken(refreshToken);
+    console.log('---refresh jwtPayload', jwtPayload);
   }
 }

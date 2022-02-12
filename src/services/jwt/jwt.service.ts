@@ -1,25 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IJwtPayload } from '@src/services/jwt/types/jwtPayload.interface';
 import * as jwt from 'jsonwebtoken';
 import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
-import { InjectModel } from 'nestjs-typegoose';
-import { ModelType } from '@typegoose/typegoose/lib/types';
-import { JwtEntity } from './jwt.entity';
 import { UserEntity } from '@src/resources/user/user.entity';
-import { UserType } from '@src/resources/user/types/user.types';
+import { SessionEntity } from '@src/resources/session/session.entity';
+import { SessionService } from '@src/resources/session/session.service';
 
 @Injectable()
 export class JwtService {
   constructor(
-    @InjectModel(JwtEntity)
-    private readonly jwtRepository: ModelType<JwtEntity>,
     private readonly configService: ConfigService,
+    private readonly sessionService: SessionService,
   ) {}
 
-  generateTokenPair(user: UserType): IJwtTokenPair {
+  async generateTokenPair(user: UserEntity): Promise<IJwtTokenPair> {
+    console.log('--- generateTokenPair user', user);
     const payload: IJwtPayload = {
-      _id: user._id.toString(),
+      _id: user.id.toString(),
       email: user.email,
     };
     const accessToken = jwt.sign(
@@ -32,6 +35,13 @@ export class JwtService {
       this.configService.get('JWT_REFRESH_SECRET'),
       { expiresIn: this.configService.get('JWT_REFRESH_EXPIRESIN') },
     );
+
+    await this.saveToken(user.id, refreshToken);
+    console.log('--- generateTokenPair pair', {
+      accessToken,
+      refreshToken,
+    });
+
     return {
       accessToken,
       refreshToken,
@@ -45,41 +55,52 @@ export class JwtService {
         this.configService.get('JWT_ACCESS_SECRET'),
       );
       return userData as IJwtPayload;
-    } catch (err) {
-      console.log('--- catch validateAccessToken', err.message);
-      return null;
+    } catch (e) {
+      throw new UnauthorizedException(e);
+      // {
+      //   "name": "TokenExpiredError",
+      //   "message": "jwt expired",
+      //   "expiredAt": "2022-02-11T22:12:54.000Z"
+      // }
+
+      // throw new UnauthorizedException(e.message);
+      // {
+      //   "statusCode": 401,
+      //   "message": "jwt expired",
+      //   "error": "Unauthorized"
+      // }
     }
   }
 
-  validateRefreshToken(token) {
+  validateRefreshToken(token): IJwtPayload {
     try {
       const userData = jwt.verify(
         token,
         this.configService.get('JWT_REFRESH_SECRET'),
       );
-      return userData;
-    } catch (err) {
-      console.log('--- catch validateRefreshToken', err.message);
-      return null;
+      return userData as IJwtPayload;
+    } catch (e) {
+      throw new UnauthorizedException(e);
     }
   }
 
   // todo check
-  async saveToken(userId, refreshToken): Promise<JwtEntity> {
-    const savedToken = await this.jwtRepository
-      .findOneAndUpdate({ userId }, refreshToken, { new: true })
-      .exec();
-    return savedToken;
+  async saveToken(userId, refreshToken): Promise<SessionEntity> {
+    const session = await this.sessionService.findByUserId(userId);
+    if (!session) {
+      return await this.sessionService.create({ userId, refreshToken });
+    }
+    return this.sessionService.update({ userId, refreshToken });
   }
 
   // todo refactor return await
-  async removeToken(refreshToken) {
-    const tokenData = await this.jwtRepository.deleteOne({ refreshToken });
+  async removeToken(userId: string) {
+    const tokenData = await this.sessionService.delete(userId);
     console.log('--- remove token tokenData', tokenData);
     return tokenData;
   }
 
-  async findToken(refreshToken): Promise<JwtEntity> {
-    return await this.jwtRepository.findOne({ refreshToken });
+  async findToken(refreshToken: string): Promise<SessionEntity> {
+    return await this.sessionService.findByRefreshToken(refreshToken);
   }
 }
