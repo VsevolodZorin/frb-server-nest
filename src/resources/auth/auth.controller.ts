@@ -27,7 +27,7 @@ export class AuthController {
   @Post('/registration')
   async registration(
     @Res() response: Response,
-    @Body('user') createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ) {
     const user = await this.userService.create(createUserDto);
     const tokenPain = await this.jwtService.generateTokenPair(user);
