@@ -88,6 +88,7 @@ export class UserService {
     return await this.userRepository.findByIdAndDelete(id).exec();
   }
 
+  // todo user.find().lean() as js obj
   buildUserResponse(user: UserEntity, accessToken?: string): IUserResponse {
     const { _id, id, email, firstName, lastName, roles } = user;
     return {

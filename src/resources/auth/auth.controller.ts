@@ -7,6 +7,7 @@ import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { JwtService } from '@src/services/jwt/jwt.service';
 import { User } from '@src/common/decorators/user.decorator';
+import { TelegramService } from '@src/services/telegram/telegram.service';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly telegramService: TelegramService,
   ) {}
 
   // @Post('loginWithFirebase')
@@ -41,6 +43,9 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
+    await this.telegramService.sendMessage(
+      `login -> email: ${loginUserDto.email}`,
+    );
     const user = await this.authService.login(loginUserDto);
     const tokenPain = await this.jwtService.generateTokenPair(user);
     response.cookie('refreshToken', tokenPain.refreshToken);
