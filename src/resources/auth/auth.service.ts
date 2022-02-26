@@ -4,14 +4,15 @@ import { UserEntity } from '@src/resources/user/user.entity';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
 import { compareSync } from 'bcryptjs';
-import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
 import { JwtService } from '@src/services/jwt/jwt.service';
+import { MailService } from '@src/services/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   // async loginWithFirebase(email: string): Promise<UserEntity> {
@@ -24,6 +25,9 @@ export class AuthService {
   // }
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    // TODO
+    this.mailService.sendUserConfirmation('vsevolod.dev@gmail.com');
+
     const errorResponse = {
       errors: {
         'email or password': 'is invalid',

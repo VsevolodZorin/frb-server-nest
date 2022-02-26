@@ -18,6 +18,7 @@ import { getTelegramConfig } from '@src/config/telegram.config';
 import { AuthMiddleware } from '@src/common/middleware/auth.middleware';
 import { JwtModule } from '@src/services/jwt/jwt.module';
 import { SessionModule } from '@src/resources/session/sessoin.module';
+import { MailModule } from './services/mail/mail.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { SessionModule } from '@src/resources/session/sessoin.module';
     }),
     SessionModule,
     JwtModule,
+    MailModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
