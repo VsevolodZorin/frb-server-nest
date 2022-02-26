@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { UserEntity } from '@src/resources/user/user.entity';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface ExpressRequest extends Request {
-  user?: UserEntity;
+  user?: JwtPayload;
 }

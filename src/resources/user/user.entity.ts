@@ -18,4 +18,7 @@ export class UserEntity extends TimeStamps {
 
   @prop({ type: () => [String] })
   roles: string[];
+
+  @prop({ default: false })
+  isActivated: boolean;
 }

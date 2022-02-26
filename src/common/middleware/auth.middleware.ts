@@ -8,6 +8,7 @@ import { UserService } from '@src/resources/user/user.service';
 import { ExpressRequest } from '@src/types/expressRequest.interface';
 import { NextFunction, Response } from 'express';
 import { JwtService } from '@src/services/jwt/jwt.service';
+import { IJwtPayload } from '@src/services/jwt/types/jwtPayload.interface';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -28,15 +29,16 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const jwtPayload = this.jwtService.validateAccessToken(accessToken);
+      const jwtPayload: IJwtPayload =
+        this.jwtService.validateAccessToken(accessToken);
 
       console.log('--- jwtService validate jwtPayload', jwtPayload);
 
       // todo user service add check
       // todo each error diagnosis service
-      const user = await this.userService.findById(jwtPayload._id);
-      console.log('authMiddleware user', user);
-      req.user = user;
+      // const user = await this.userService.findById(jwtPayload._id);
+      // console.log('authMiddleware user', user);
+      req.user = jwtPayload;
       next();
     } catch (e) {
       throw new HttpException(e.getResponse(), e.getStatus());

@@ -47,10 +47,12 @@ export class RoleService {
     return await this.roleRepository.findOne({ name }).exec();
   }
 
+  // todo updare role
   async update(id: number, updateRoleDto: UpdateRoleDto) {
     return `This action updates a #${id} role`;
   }
 
+  // todo remove role
   async remove(id: number) {
     return `This action removes a #${id} role`;
   }

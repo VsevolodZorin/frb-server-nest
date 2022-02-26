@@ -26,17 +26,26 @@ export class AuthController {
   //   return this.userService.buildUserResponse(user);
   // }
 
+  @Get('/test')
+  async test() {
+    return this.authService.test();
+  }
+
   @Post('/registration')
   async registration(
     @Res() response: Response,
     @Body() createUserDto: CreateUserDto,
   ) {
-    const user = await this.userService.create(createUserDto);
-    const tokenPain = await this.jwtService.generateTokenPair(user);
-    response.cookie('refreshToken', tokenPain.refreshToken);
+    // const user = await this.userService.create(createUserDto);
+    // const tokenPain = await this.jwtService.generateTokenPair(user);
+    const { user, tokenPair } = await this.authService.registration(createUserDto);
+    response.cookie('refreshToken', tokenPair.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     const userResponse = await this.userService.buildUserResponse(
       user,
-      tokenPain.accessToken,
+      tokenPair.accessToken,
     );
     response.json(userResponse);
   }
@@ -47,11 +56,14 @@ export class AuthController {
       `login -> email: ${loginUserDto.email}`,
     );
     const user = await this.authService.login(loginUserDto);
-    const tokenPain = await this.jwtService.generateTokenPair(user);
-    response.cookie('refreshToken', tokenPain.refreshToken);
+    const tokenPair = await this.jwtService.generateTokenPair(user);
+    response.cookie('refreshToken', tokenPair.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     const userResponse = this.userService.buildUserResponse(
       user,
-      tokenPain.accessToken,
+      tokenPair.accessToken,
     );
 
     response.json(userResponse);

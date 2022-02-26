@@ -22,8 +22,9 @@ export class JwtService {
   async generateTokenPair(user: UserEntity): Promise<IJwtTokenPair> {
     console.log('--- generateTokenPair user', user);
     const payload: IJwtPayload = {
-      _id: user.id.toString(),
       email: user.email,
+      roles: user.roles,
+      isActivated: user.isActivated,
     };
     const accessToken = jwt.sign(
       payload,

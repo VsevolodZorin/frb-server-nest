@@ -6,10 +6,16 @@ import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.inter
 import { compareSync } from 'bcryptjs';
 import { JwtService } from '@src/services/jwt/jwt.service';
 import { MailService } from '@src/services/mail/mail.service';
-
+import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
+import { v4 as uuid } from 'uuid';
+import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
+import { EmailActivationService } from '../emailActivation/emailActivation.service';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly emailActivationService: EmailActivationService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
@@ -24,9 +30,34 @@ export class AuthService {
   // return user;
   // }
 
+  async registration(
+    dto: CreateUserDto,
+  ): Promise<{ user: UserEntity } & { tokenPair: IJwtTokenPair }> {
+    const user = await this.userService.create(dto);
+
+    const activationLink = uuid(); // v34fa-asfasf-142saf-sa-asf
+    const apiUrl = this.configService.get('API_URL');
+    const link = `${apiUrl}/activate/${activationLink}`;
+    await this.mailService.sendActivationMail(dto.email, link);
+
+    await this.emailActivationService.create({
+      email: user.email,
+      activationLink,
+    });
+
+    const tokenPair = await this.jwtService.generateTokenPair(user);
+
+    return { user, tokenPair };
+  }
+
+  async test() {
+    // return this.userService.findByEmail('vsevolod.dev@gmail.com');
+    return this.userService.findByEmailLean('vsevolod.dev@gmail.com');
+  }
+
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
     // TODO
-    this.mailService.sendUserConfirmation('vsevolod.dev@gmail.com');
+    // this.mailService.sendActivationMail('vsevolod.dev@gmail.com');
 
     const errorResponse = {
       errors: {

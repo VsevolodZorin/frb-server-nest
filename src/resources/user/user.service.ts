@@ -59,43 +59,51 @@ export class UserService {
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find().exec();
+    return this.userRepository.find().exec();
   }
 
   async findById(
     id: string,
     findOptons: IUserFindOptions = {},
   ): Promise<UserEntity> {
-    return await this.userRepository.findById(id, findOptons).exec();
+    return this.userRepository.findById(id, findOptons).exec();
   }
 
   async findByEmail(
     email: string,
     findOptons: IUserFindOptions = {},
   ): Promise<UserEntity> {
-    return await this.userRepository.findOne({ email }, findOptons).exec();
+    return this.userRepository.findOne({ email }, findOptons).exec();
+  }
+
+  async findByEmailLean(
+    email: string,
+    findOptons: IUserFindOptions = {},
+  ): Promise<UserEntity> {
+    return this.userRepository.findOne({ email }, findOptons).lean().exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    return await this.userRepository
+    return this.userRepository
       .findByIdAndUpdate(id, updateUserDto, {
         new: true,
       })
       .exec();
   }
 
-  async remove(id: string) {
-    return await this.userRepository.findByIdAndDelete(id).exec();
+  async remove(id: string): Promise<any> {
+    return this.userRepository.findByIdAndDelete(id).exec();
   }
 
   // todo user.find().lean() as js obj
   buildUserResponse(user: UserEntity, accessToken?: string): IUserResponse {
-    const { _id, id, email, firstName, lastName, roles } = user;
+    const { _id, id, email, isActivated, firstName, lastName, roles } = user;
     return {
       user: {
         _id,
         id,
         email,
+        isActivated,
         firstName,
         lastName,
         roles,

@@ -5,9 +5,18 @@ import { UserModule } from '@src/resources/user/user.module';
 import { JwtModule } from '@src/services/jwt/jwt.module';
 import { TelegramModule } from '@src/services/telegram/telegram.module';
 import { MailModule } from '@src/services/mail/mail.module';
+import { EmailActivationModule } from '@src/resources/emailActivation/emailActivation.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, JwtModule, TelegramModule, MailModule],
+  imports: [
+    ConfigModule,
+    EmailActivationModule,
+    UserModule,
+    JwtModule,
+    TelegramModule,
+    MailModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })
