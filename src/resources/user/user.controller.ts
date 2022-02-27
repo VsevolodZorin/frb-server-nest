@@ -40,13 +40,16 @@ export class UserController {
     @User('_id') currentUserId: string,
     @Body('user') updateUserDto: UpdateUserDto,
   ): Promise<IUserResponse> {
-    const user = await this.userService.update(currentUserId, updateUserDto);
+    const user = await this.userService.updateById(
+      currentUserId,
+      updateUserDto,
+    );
     return this.userService.buildUserResponse(user);
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.userService.update(id, updateUserDto);
+    const user = await this.userService.updateById(id, updateUserDto);
     return this.userService.buildUserResponse(user);
   }
 

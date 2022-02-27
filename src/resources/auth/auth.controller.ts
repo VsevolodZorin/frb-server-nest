@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Redirect,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from '@src/resources/auth/auth.service';
 import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
 import { UserService } from '@src/resources/user/user.service';
@@ -28,7 +37,8 @@ export class AuthController {
 
   @Get('/test')
   async test() {
-    return this.authService.test();
+    return 'auth rest';
+    // return this.authService.test();
   }
 
   @Post('/registration')
@@ -36,9 +46,9 @@ export class AuthController {
     @Res() response: Response,
     @Body() createUserDto: CreateUserDto,
   ) {
-    // const user = await this.userService.create(createUserDto);
-    // const tokenPain = await this.jwtService.generateTokenPair(user);
-    const { user, tokenPair } = await this.authService.registration(createUserDto);
+    const { user, tokenPair } = await this.authService.registration(
+      createUserDto,
+    );
     response.cookie('refreshToken', tokenPair.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
@@ -48,6 +58,13 @@ export class AuthController {
       tokenPair.accessToken,
     );
     response.json(userResponse);
+  }
+
+  // todo change redirect
+  @Get('/activate/:link')
+  @Redirect('http://localhost:3000', 302)
+  async activate(@Param('link') link: string) {
+    await this.authService.activate(link);
   }
 
   @Post('/login')
@@ -70,10 +87,6 @@ export class AuthController {
   }
 
   async logout() {
-    return;
-  }
-
-  async activate() {
     return;
   }
 

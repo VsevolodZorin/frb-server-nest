@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { UserService } from '@src/resources/user/user.service';
 import { UserEntity } from '@src/resources/user/user.entity';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
@@ -37,7 +42,8 @@ export class AuthService {
 
     const activationLink = uuid(); // v34fa-asfasf-142saf-sa-asf
     const apiUrl = this.configService.get('API_URL');
-    const link = `${apiUrl}/activate/${activationLink}`;
+    // todo activation link on client
+    const link = `${apiUrl}/auth/activate/${activationLink}`;
     await this.mailService.sendActivationMail(dto.email, link);
 
     await this.emailActivationService.create({
@@ -50,9 +56,18 @@ export class AuthService {
     return { user, tokenPair };
   }
 
-  async test() {
-    // return this.userService.findByEmail('vsevolod.dev@gmail.com');
-    return this.userService.findByEmailLean('vsevolod.dev@gmail.com');
+  async activate(link: string) {
+    const activationEntity =
+      await this.emailActivationService.getByActivationLink(link);
+
+    if (!activationEntity) {
+      throw new BadRequestException('uncorrect activation link');
+    }
+
+    await this.userService.updateByEmail(activationEntity.email, {
+      isActivated: true,
+    });
+    await this.emailActivationService.remove(link);
   }
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
@@ -88,10 +103,6 @@ export class AuthService {
   }
 
   async logout() {
-    return;
-  }
-
-  async activate() {
     return;
   }
 

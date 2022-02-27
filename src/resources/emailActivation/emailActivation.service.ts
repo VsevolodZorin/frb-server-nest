@@ -32,6 +32,13 @@ export class EmailActivationService {
       .exec();
   }
 
+  async update(dto: CreateEmailActivationDto): Promise<EmailActivationEntity> {
+    return this.emailActivatioinRepository.findOneAndUpdate(
+      { email: dto.email },
+      { activationLink: dto.activationLink },
+    );
+  }
+
   async remove(activationLink: string): Promise<any> {
     return this.emailActivatioinRepository
       .findOneAndDelete({ activationLink })

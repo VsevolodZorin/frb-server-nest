@@ -83,11 +83,19 @@ export class UserService {
     return this.userRepository.findOne({ email }, findOptons).lean().exec();
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async updateById(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    return this.userRepository.findByIdAndUpdate(id, updateUserDto).exec();
+  }
+
+  async updateByEmail(
+    email: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
     return this.userRepository
-      .findByIdAndUpdate(id, updateUserDto, {
-        new: true,
-      })
+      .findOneAndUpdate({ email }, updateUserDto)
       .exec();
   }
 
