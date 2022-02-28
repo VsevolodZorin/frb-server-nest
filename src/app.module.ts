@@ -20,6 +20,8 @@ import { JwtModule } from '@src/services/jwt/jwt.module';
 import { SessionModule } from '@src/resources/session/sessoin.module';
 import { MailModule } from '@src/services/mail/mail.module';
 import { EmailActivationModule } from '@src/resources/emailActivation/emailActivation.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -42,6 +44,14 @@ import { EmailActivationModule } from '@src/resources/emailActivation/emailActiv
     JwtModule,
     MailModule,
     EmailActivationModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'assets'),
+      // exclude: ['/api*'],
+      // serveStaticOptions: {
+      //   redirect: false,
+      //   index: false,
+      // },
+    }),
   ],
   controllers: [],
   providers: [FirebaseApp],

@@ -6,8 +6,6 @@ export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
   async sendActivationMail(to: string, activationLink: string) {
-    // const url = `example.com/auth/confirm?token=${token}`;
-
     await this.mailerService.sendMail({
       to,
       subject: 'Welcome to project-dev-way! Confirm your Email',
