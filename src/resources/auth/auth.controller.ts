@@ -60,7 +60,6 @@ export class AuthController {
     response.json(userResponse);
   }
 
-  // todo change redirect
   @Get('/activate/:link')
   @Redirect('http://localhost:3000', 302)
   async activate(@Param('link') link: string) {
@@ -86,8 +85,11 @@ export class AuthController {
     response.json(userResponse);
   }
 
-  async logout() {
-    return;
+  @Post('/logout')
+  async logout(@User('id') userId: string, @Res() response: Response) {
+    response.clearCookie('refreshToken');
+    await this.jwtService.removeToken(userId);
+    return response.status(200).json({ message: 'logout ok' });
   }
 
   @Post('/refresh')
@@ -98,14 +100,17 @@ export class AuthController {
   ) {
     console.log('/refresh userId', userId);
     const { refreshToken } = request.cookies;
-    const tokenPair = this.authService.refresh(refreshToken);
-    // response.cookie('refreshToken', tokenPain.refreshToken);
-    // const userResponse = this.userService.buildUserResponse(
-    //   user,
-    //   tokenPain.accessToken,
-    // );
+    const user = await this.userService.findById(userId);
+    const tokenPair = await this.authService.refresh(refreshToken);
+    response.cookie('refreshToken', tokenPair.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    const userResponse = this.userService.buildUserResponse(
+      user,
+      tokenPair.accessToken,
+    );
 
-    response.json({ msg: 'refresh' });
-    return;
+    return response.json(userResponse);
   }
 }

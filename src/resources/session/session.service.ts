@@ -34,7 +34,7 @@ export class SessionService {
     return updated;
   }
 
-  async delete(userId: string) {
-    return await this.sessionRepository.deleteOne({ userId }).exec();
+  async delete(refreshToken: string) {
+    return await this.sessionRepository.deleteOne({ refreshToken }).exec();
   }
 }

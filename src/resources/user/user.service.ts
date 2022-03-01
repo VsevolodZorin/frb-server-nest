@@ -105,10 +105,9 @@ export class UserService {
 
   // todo user.find().lean() as js obj
   buildUserResponse(user: UserEntity, accessToken?: string): IUserResponse {
-    const { _id, id, email, isActivated, firstName, lastName, roles } = user;
+    const { id, email, isActivated, firstName, lastName, roles } = user;
     return {
       user: {
-        _id,
         id,
         email,
         isActivated,

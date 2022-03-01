@@ -7,6 +7,7 @@ import { TelegramModule } from '@src/services/telegram/telegram.module';
 import { MailModule } from '@src/services/mail/mail.module';
 import { EmailActivationModule } from '@src/resources/emailActivation/emailActivation.module';
 import { ConfigModule } from '@nestjs/config';
+import { SessionModule } from '../session/sessoin.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     EmailActivationModule,
     UserModule,
     JwtModule,
+    SessionModule,
     TelegramModule,
     MailModule,
   ],

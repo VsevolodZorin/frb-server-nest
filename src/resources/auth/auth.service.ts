@@ -3,19 +3,21 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { compare } from 'bcryptjs';
+import { v4 as uuid } from 'uuid';
 import { UserService } from '@src/resources/user/user.service';
 import { UserEntity } from '@src/resources/user/user.entity';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
-import { compareSync } from 'bcryptjs';
+import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
+import { EmailActivationService } from '@src/resources/emailActivation/emailActivation.service';
+import { SessionService } from '@src/resources/session/session.service';
 import { JwtService } from '@src/services/jwt/jwt.service';
 import { MailService } from '@src/services/mail/mail.service';
-import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
-import { v4 as uuid } from 'uuid';
 import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
-import { EmailActivationService } from '../emailActivation/emailActivation.service';
-import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
@@ -23,6 +25,7 @@ export class AuthService {
     private readonly emailActivationService: EmailActivationService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
     private readonly mailService: MailService,
   ) {}
 
@@ -93,7 +96,10 @@ export class AuthService {
       //     FORBIDDEN = 403,
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    const isPasswordCorrect = compareSync(loginUserDto.password, user.password);
+    const isPasswordCorrect = await compare(
+      loginUserDto.password,
+      user.password,
+    );
     if (!isPasswordCorrect) {
       //     FORBIDDEN = 403,
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -102,21 +108,23 @@ export class AuthService {
     return user;
   }
 
-  async logout() {
-    return;
+  async logout(userId: string) {
+    return await this.jwtService.removeToken(userId);
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(refreshToken: string): Promise<IJwtTokenPair> {
     if (!refreshToken) {
-      throw new HttpException(
-        {
-          status: HttpStatus.UNAUTHORIZED,
-          error: 'unauthorized',
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new UnauthorizedException();
     }
     const jwtPayload = await this.jwtService.validateRefreshToken(refreshToken);
-    console.log('---refresh jwtPayload', jwtPayload);
+    const session = await this.sessionService.findByRefreshToken(refreshToken);
+
+    if (!jwtPayload && !session) {
+      throw new UnauthorizedException();
+    }
+    console.log('---refresh jwtPayload', { jwtPayload, session });
+
+    const user = await this.userService.findById(jwtPayload.id);
+    return await this.jwtService.generateTokenPair(user);
   }
 }
