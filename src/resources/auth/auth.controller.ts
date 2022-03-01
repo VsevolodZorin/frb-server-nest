@@ -92,16 +92,10 @@ export class AuthController {
     return response.status(200).json({ message: 'logout ok' });
   }
 
-  @Post('/refresh')
-  async refresh(
-    @User('id') userId: string,
-    @Req() request: Request,
-    @Res() response: Response,
-  ) {
-    console.log('/refresh userId', userId);
+  @Get('/refresh')
+  async refresh(@Req() request: Request, @Res() response: Response) {
     const { refreshToken } = request.cookies;
-    const user = await this.userService.findById(userId);
-    const tokenPair = await this.authService.refresh(refreshToken);
+    const { user, tokenPair } = await this.authService.refresh(refreshToken);
     response.cookie('refreshToken', tokenPair.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,

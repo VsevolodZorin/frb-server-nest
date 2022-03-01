@@ -112,7 +112,9 @@ export class AuthService {
     return await this.jwtService.removeToken(userId);
   }
 
-  async refresh(refreshToken: string): Promise<IJwtTokenPair> {
+  async refresh(
+    refreshToken: string,
+  ): Promise<{ user: UserEntity; tokenPair: IJwtTokenPair }> {
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
@@ -125,6 +127,7 @@ export class AuthService {
     console.log('---refresh jwtPayload', { jwtPayload, session });
 
     const user = await this.userService.findById(jwtPayload.id);
-    return await this.jwtService.generateTokenPair(user);
+    const tokenPair = await this.jwtService.generateTokenPair(user);
+    return { user, tokenPair };
   }
 }
