@@ -79,25 +79,29 @@ export class AppModule implements NestModule {
           method: RequestMethod.DELETE,
         },
       );
-    // consumer
-    //   .apply(FirebaseMiddleware)
-    //   .exclude({
-    //     path: '*',
-    //     method: RequestMethod.GET,
-    //   })
-    //   .forRoutes(
-    //     {
-    //       path: '*',
-    //       method: RequestMethod.POST,
-    //     },
-    //     {
-    //       path: '*',
-    //       method: RequestMethod.PATCH,
-    //     },
-    //     {
-    //       path: '*',
-    //       method: RequestMethod.DELETE,
-    //     },
-    //   );
+    consumer
+      .apply(FirebaseMiddleware)
+      .exclude({
+        path: '*',
+        method: RequestMethod.GET,
+      })
+      .forRoutes(
+        {
+          path: 'auth/loginfrb',
+          method: RequestMethod.GET,
+        },
+        // {
+        //   path: '*',
+        //   method: RequestMethod.POST,
+        // },
+        // {
+        //   path: '*',
+        //   method: RequestMethod.PATCH,
+        // },
+        // {
+        //   path: '*',
+        //   method: RequestMethod.DELETE,
+        // },
+      );
   }
 }

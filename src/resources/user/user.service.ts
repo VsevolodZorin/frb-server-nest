@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { UserEntity } from '@src/resources/user/user.entity';

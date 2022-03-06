@@ -12,7 +12,7 @@ import { AuthService } from '@src/resources/auth/auth.service';
 import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
 import { UserService } from '@src/resources/user/user.service';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
-import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
+import { CreateUserDto } from '@src/resources/user/dto/createUser.dto';
 import { Request, Response } from 'express';
 import { JwtService } from '@src/services/jwt/jwt.service';
 import { User } from '@src/common/decorators/user.decorator';
@@ -71,6 +71,8 @@ export class AuthController {
     await this.telegramService.sendMessage(
       `login -> email: ${loginUserDto.email}`,
     );
+    console.log('loginUserDto', loginUserDto);
+
     const user = await this.authService.login(loginUserDto);
     const tokenPair = await this.jwtService.generateTokenPair(user);
     response.cookie('refreshToken', tokenPair.refreshToken, {
@@ -82,14 +84,12 @@ export class AuthController {
       tokenPair.accessToken,
     );
 
-    response.json(userResponse);
+    return response.json(userResponse);
   }
 
-  @Post('/logout')
-  async logout(@User('id') userId: string, @Res() response: Response) {
-    response.clearCookie('refreshToken');
-    await this.jwtService.removeToken(userId);
-    return response.status(200).json({ message: 'logout ok' });
+  @Post('/loginfrb')
+  async loginFrb() {
+    return 'loginFrb';
   }
 
   @Get('/refresh')
@@ -106,5 +106,12 @@ export class AuthController {
     );
 
     return response.json(userResponse);
+  }
+
+  @Post('/logout')
+  async logout(@User('id') userId: string, @Res() response: Response) {
+    response.clearCookie('refreshToken');
+    await this.jwtService.removeToken(userId);
+    return response.status(200).json({ message: 'logout ok' });
   }
 }

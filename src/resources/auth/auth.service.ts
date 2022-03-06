@@ -12,7 +12,7 @@ import { UserService } from '@src/resources/user/user.service';
 import { UserEntity } from '@src/resources/user/user.entity';
 import { LoginUserDto } from '@src/resources/auth/dto/loginUser.dto';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
-import { CreateUserDto } from '@src/resources/user/dto/create-user.dto';
+import { CreateUserDto } from '@src/resources/user/dto/createUser.dto';
 import { EmailActivationService } from '@src/resources/emailActivation/emailActivation.service';
 import { SessionService } from '@src/resources/session/session.service';
 import { JwtService } from '@src/services/jwt/jwt.service';
@@ -108,10 +108,6 @@ export class AuthService {
     return user;
   }
 
-  async logout(userId: string) {
-    return await this.jwtService.removeToken(userId);
-  }
-
   async refresh(
     refreshToken: string,
   ): Promise<{ user: UserEntity; tokenPair: IJwtTokenPair }> {
@@ -129,5 +125,9 @@ export class AuthService {
     const user = await this.userService.findById(jwtPayload.id);
     const tokenPair = await this.jwtService.generateTokenPair(user);
     return { user, tokenPair };
+  }
+
+  async logout(userId: string) {
+    return await this.jwtService.removeToken(userId);
   }
 }
