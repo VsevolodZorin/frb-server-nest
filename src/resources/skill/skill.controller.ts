@@ -27,12 +27,7 @@ export class SkillController {
     return await this.skillService.findAll();
   }
 
-  @Get(':id')
-  async findById(@Param('id') id: string): Promise<SkillEntity> {
-    return await this.skillService.findById(id);
-  }
-
-  @Get('/coount')
+  @Get('/count')
   async count(): Promise<number> {
     return await this.skillService.count();
   }
@@ -43,6 +38,11 @@ export class SkillController {
     @Query('limit') limit: number,
   ): Promise<SkillEntity[]> {
     return await this.skillService.pagination(skip, limit);
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<SkillEntity> {
+    return await this.skillService.findById(id);
   }
 
   @Post()
