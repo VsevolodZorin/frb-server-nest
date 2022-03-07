@@ -37,8 +37,6 @@ export class TagController {
     @Query('skip') skip: number,
     @Query('limit') limit: number,
   ): Promise<TagEntity[]> {
-    console.log('--- pagination ', { skip, limit });
-
     return await this.tagService.pagination(skip, limit);
   }
 
