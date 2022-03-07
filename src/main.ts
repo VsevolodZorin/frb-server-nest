@@ -1,6 +1,7 @@
 if (!process.env.IS_TS_NODE) {
   require('module-alias/register');
 }
+
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';

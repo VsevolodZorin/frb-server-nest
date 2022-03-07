@@ -23,6 +23,7 @@ import { EmailActivationModule } from '@src/resources/emailActivation/emailActiv
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { SkillModule } from './resources/skill/skill.module';
+import { TagModule } from './resources/tag/tag.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { SkillModule } from './resources/skill/skill.module';
       //   index: false,
       // },
     }),
+    TagModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
