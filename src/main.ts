@@ -7,12 +7,14 @@ import * as express from 'express';
 import * as functions from 'firebase-functions';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from '@src/app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: { origin: true, credentials: true },
   });
   app.use(cookieParser());
+  // app.useGlobalPipes(new ValidationPipe());
   await app.listen(4000, () => {
     console.log('server start at port 4000');
   });

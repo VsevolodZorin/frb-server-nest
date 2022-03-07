@@ -8,11 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
-import { RoleEntity } from '@src/resources/role/role.entity';
+import { CreateRoleDto } from './dto/createRole.dto';
+import { UpdateRoleDto } from './dto/updateRole.dto';
+import { RoleEntity, RolesEnum } from '@src/resources/role/role.entity';
 import { Role } from '@src/common/decorators/roles.decorator';
-import { RolesEnum } from '@src/common/types/role.enum';
 
 @Controller('role')
 export class RoleController {
@@ -35,11 +34,13 @@ export class RoleController {
   }
 
   @Patch(':id')
+  @Role(RolesEnum.ADMIN)
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.update(+id, updateRoleDto);
   }
 
   @Delete(':id')
+  @Role(RolesEnum.ADMIN)
   remove(@Param('id') id: string) {
     return this.roleService.remove(+id);
   }

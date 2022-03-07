@@ -22,6 +22,7 @@ import { MailModule } from '@src/services/mail/mail.module';
 import { EmailActivationModule } from '@src/resources/emailActivation/emailActivation.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { SkillModule } from './resources/skill/skill.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { join } from 'path';
     UserModule,
     RoleModule,
     PermissionModule,
+    SkillModule,
+    EmailActivationModule,
     TelegramModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -43,10 +46,10 @@ import { join } from 'path';
     SessionModule,
     JwtModule,
     MailModule,
-    EmailActivationModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'assets'),
       // exclude: ['/api*'],
+      exclude: ['/*'],
       // serveStaticOptions: {
       //   redirect: false,
       //   index: false,

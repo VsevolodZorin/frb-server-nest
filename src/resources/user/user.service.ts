@@ -6,10 +6,10 @@ import { UserEntity } from '@src/resources/user/user.entity';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { RoleService } from '@src/resources/role/role.service';
 import { IUserResponse } from '@src/resources/user/types/userResponse.Interface';
-import { RolesEnum } from '@src/common/types/role.enum';
 import { IUserFindOptions } from '@src/resources/user/types/userFindOptons.interface';
 
 import { genSalt, hash } from 'bcryptjs';
+import { RolesEnum } from '../role/role.entity';
 
 @Injectable()
 export class UserService {
