@@ -1,5 +1,3 @@
-import { UserEntity } from '@src/resources/user/user.entity';
-
 // export type UserType = Omit<UserEntity, 'password'>;
 
 // todo role type admin | user
@@ -8,6 +6,7 @@ export type UserType = {
   email: string;
   firstName: string;
   lastName: string;
+  // todo role string or RoleType
   roles: string[];
   isActivated: boolean;
 };

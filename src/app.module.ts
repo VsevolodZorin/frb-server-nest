@@ -24,6 +24,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { SkillModule } from './resources/skill/skill.module';
 import { TagModule } from './resources/tag/tag.module';
+import { ArticleModule } from './resources/article/article.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { TagModule } from './resources/tag/tag.module';
       // },
     }),
     TagModule,
+    ArticleModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
