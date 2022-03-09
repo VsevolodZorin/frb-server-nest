@@ -17,14 +17,17 @@ import { UpdateSkillDto } from './dto/updateSkill.dto';
 import { SkillEntity } from './skill.entity';
 import { Role } from '@src/common/decorators/roles.decorator';
 import { RolesEnum } from '@src/resources/role/role.entity';
+import { ISkillsResponse } from './types/skillsResponse.interface';
+import { ISkillResponse } from './types/skillResponse.interface';
 
 @Controller('skills')
 export class SkillController {
   constructor(private readonly skillService: SkillService) {}
 
   @Get()
-  async findAll(): Promise<SkillEntity[]> {
-    return await this.skillService.findAll();
+  async findAll(): Promise<ISkillsResponse> {
+    const skills = await this.skillService.findAll();
+    return this.skillService.buildSkillsResponse(skills);
   }
 
   @Get('/count')
@@ -36,20 +39,34 @@ export class SkillController {
   async pagination(
     @Query('skip') skip: number,
     @Query('limit') limit: number,
-  ): Promise<SkillEntity[]> {
-    return await this.skillService.pagination(skip, limit);
+  ): Promise<ISkillsResponse> {
+    const skills = await this.skillService.pagination(skip, limit);
+    if (!skills) {
+      throw new NotFoundException('skills not found');
+    }
+    return this.skillService.buildSkillsResponse(skills);
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<SkillEntity> {
-    return await this.skillService.findById(id);
+  async findById(@Param('id') id: string): Promise<ISkillResponse> {
+    const skill = await this.skillService.findById(id);
+    if (!skill) {
+      throw new NotFoundException('skill not found');
+    }
+    return this.skillService.buildSkillResponse(skill);
   }
 
   @Post()
   @Role(RolesEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  async create(@Body() createSkillDto: CreateSkillDto): Promise<SkillEntity> {
-    return await this.skillService.create(createSkillDto);
+  async create(
+    @Body() createSkillDto: CreateSkillDto,
+  ): Promise<ISkillResponse> {
+    const skill = await this.skillService.create(createSkillDto);
+    if (!skill) {
+      // todo make exeption
+    }
+    return this.skillService.buildSkillResponse(skill);
   }
 
   @Patch(':id')
@@ -58,12 +75,12 @@ export class SkillController {
   async update(
     @Param('id') id: string,
     @Body() updateSkillDto: UpdateSkillDto,
-  ): Promise<SkillEntity> {
+  ): Promise<ISkillResponse> {
     const updatedSkill = await this.skillService.update(id, updateSkillDto);
     if (!updatedSkill) {
       throw new NotFoundException('skill not found');
     }
-    return updatedSkill;
+    return this.skillService.buildSkillResponse(updatedSkill);
   }
 
   @Delete(':id')

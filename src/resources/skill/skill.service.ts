@@ -4,6 +4,9 @@ import { UpdateSkillDto } from './dto/updateSkill.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { SkillEntity } from '@src/resources/skill/skill.entity';
+import { ISkillResponse } from './types/skillResponse.interface';
+import { SkillType } from './types/skill.type';
+import { ISkillsResponse } from './types/skillsResponse.interface';
 
 @Injectable()
 export class SkillService {
@@ -53,5 +56,33 @@ export class SkillService {
 
   async remove(id: string) {
     return this.skillRepository.findByIdAndRemove(id).exec();
+  }
+
+  convertSkillEnityToSkillType(skill: SkillEntity): SkillType {
+    const { _id, name, type, description, level, eventDate, img } = skill;
+    return {
+      id: _id.toString(),
+      name,
+      type,
+      description,
+      level,
+      eventDate,
+      img,
+    };
+  }
+
+  buildSkillResponse(skill: SkillEntity): ISkillResponse {
+    const convertedSkill = this.convertSkillEnityToSkillType(skill);
+    return {
+      skill: convertedSkill,
+    };
+  }
+  buildSkillsResponse(skills: SkillEntity[]): ISkillsResponse {
+    const convertedSkills = skills.map((el) =>
+      this.convertSkillEnityToSkillType(el),
+    );
+    return {
+      skills: convertedSkills,
+    };
   }
 }
