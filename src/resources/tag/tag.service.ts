@@ -4,6 +4,9 @@ import { InjectModel } from 'nestjs-typegoose';
 import { CreateTagDto } from './dto/createTag.dto';
 import { UpdateTagDto } from './dto/updateTag.dto';
 import { TagEntity } from './tag.entity';
+import { TagType } from './types/tag.type';
+import { ITagResponse } from './types/tagResponse.interface';
+import { ITagsResponse } from './types/tagsResponse.interface';
 
 @Injectable()
 export class TagService {
@@ -50,5 +53,27 @@ export class TagService {
 
   async remove(id: string) {
     return this.tagRepository.findByIdAndRemove(id).exec();
+  }
+
+  convertTagEnityToTagType(tag: TagEntity): TagType {
+    const { _id, name } = tag;
+    return {
+      id: _id.toString(),
+      name,
+    };
+  }
+
+  buildTagResponse(tag: TagEntity): ITagResponse {
+    const convertedTag = this.convertTagEnityToTagType(tag);
+    return {
+      tag: convertedTag,
+    };
+  }
+
+  buildTagsResponse(tags: TagEntity[]): ITagsResponse {
+    const convertedTags = tags.map((el) => this.convertTagEnityToTagType(el));
+    return {
+      tags: convertedTags,
+    };
   }
 }

@@ -14,7 +14,6 @@ import {
 import { SkillService } from './skill.service';
 import { CreateSkillDto } from './dto/createSkill.dto';
 import { UpdateSkillDto } from './dto/updateSkill.dto';
-import { SkillEntity } from './skill.entity';
 import { Role } from '@src/common/decorators/roles.decorator';
 import { RolesEnum } from '@src/resources/role/role.entity';
 import { ISkillsResponse } from './types/skillsResponse.interface';
