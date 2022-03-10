@@ -17,14 +17,17 @@ import { ArticleEntity } from './article.entity';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { UpdateArticleDto } from './dto/updateArticle.dto';
+import { IArticleResponse } from './types/articleResponse.interface';
+import { IArticlesResponse } from './types/articlesResponse.interface';
 
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get()
-  async findAll(): Promise<ArticleEntity[]> {
-    return await this.articleService.findAll();
+  async findAll(): Promise<IArticlesResponse> {
+    const articles = await this.articleService.findAll();
+    return this.articleService.buildArticlesResponse(articles);
   }
 
   @Get('/count')
@@ -36,13 +39,15 @@ export class ArticleController {
   async pagination(
     @Query('skip') skip: number,
     @Query('limit') limit: number,
-  ): Promise<ArticleEntity[]> {
-    return await this.articleService.pagination(skip, limit);
+  ): Promise<IArticlesResponse> {
+    const articles = await this.articleService.pagination(skip, limit);
+    return await this.articleService.buildArticlesResponse(articles);
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<ArticleEntity> {
-    return await this.articleService.findById(id);
+  async findById(@Param('id') id: string): Promise<IArticleResponse> {
+    const article = await this.articleService.findById(id);
+    return await this.articleService.buildArticleResponse(article);
   }
 
   @Post()
@@ -50,8 +55,9 @@ export class ArticleController {
   @UsePipes(new ValidationPipe())
   async create(
     @Body() createArticleDto: CreateArticleDto,
-  ): Promise<ArticleEntity> {
-    return await this.articleService.create(createArticleDto);
+  ): Promise<IArticleResponse> {
+    const article = await this.articleService.create(createArticleDto);
+    return await this.articleService.buildArticleResponse(article);
   }
 
   @Patch(':id')
@@ -60,7 +66,7 @@ export class ArticleController {
   async update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
-  ): Promise<ArticleEntity> {
+  ): Promise<IArticleResponse> {
     const updatedArticle = await this.articleService.update(
       id,
       updateArticleDto,
@@ -68,7 +74,7 @@ export class ArticleController {
     if (!updatedArticle) {
       throw new NotFoundException('article not found');
     }
-    return updatedArticle;
+    return await this.articleService.buildArticleResponse(updatedArticle);
   }
 
   @Delete(':id')

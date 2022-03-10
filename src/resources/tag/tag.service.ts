@@ -23,6 +23,10 @@ export class TagService {
     return this.tagRepository.findById(id).exec();
   }
 
+  async findByIds(ids: string[]): Promise<TagEntity[]> {
+    return this.tagRepository.find({ _id: ids }).lean().exec();
+  }
+
   async count(): Promise<number> {
     return this.tagRepository.find().lean().countDocuments();
   }

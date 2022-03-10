@@ -77,6 +77,7 @@ export class SkillService {
       skill: convertedSkill,
     };
   }
+
   buildSkillsResponse(skills: SkillEntity[]): ISkillsResponse {
     const convertedSkills = skills.map((el) =>
       this.convertSkillEnityToSkillType(el),

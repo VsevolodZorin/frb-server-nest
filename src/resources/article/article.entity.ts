@@ -30,6 +30,7 @@ export class ArticleEntity extends TimeStamps {
   @prop({ required: true })
   language: string;
 
+  // id[]
   @prop({ type: () => [String] })
-  tags: string[];
+  tagsIds: string[];
 }

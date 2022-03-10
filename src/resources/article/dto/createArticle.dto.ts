@@ -29,5 +29,5 @@ export class CreateArticleDto {
   title: string;
 
   @IsOptional()
-  tags?: string[];
+  tagsIds?: string[];
 }
