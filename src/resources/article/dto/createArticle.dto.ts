@@ -22,7 +22,7 @@ export class CreateArticleDto {
   @IsNotEmpty()
   language: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   slug: string;
 
   @IsNotEmpty()

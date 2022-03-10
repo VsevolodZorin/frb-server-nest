@@ -6,7 +6,7 @@ export class ArticleEntity extends TimeStamps {
   @prop({ unique: true, required: true })
   slug: string;
 
-  @prop({ required: true })
+  @prop({ unique: true, required: true })
   title: string;
 
   @prop({ required: true })

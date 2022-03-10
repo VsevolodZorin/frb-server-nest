@@ -1,6 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
+import slugify from 'slugify';
 import { TagService } from '../tag/tag.service';
 import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
@@ -35,7 +36,7 @@ export class ArticleService {
 
   async create(createArticleDto: CreateArticleDto): Promise<ArticleEntity> {
     const article = await this.articleRepository
-      .findOne({ slug: createArticleDto.slug })
+      .findOne({ title: createArticleDto.title })
       .lean()
       .exec();
 
@@ -46,6 +47,8 @@ export class ArticleService {
     }
 
     const newArticle = new this.articleRepository(createArticleDto);
+    newArticle.slug = this.getSlug(createArticleDto.title);
+
     return newArticle.save();
   }
 
@@ -53,6 +56,9 @@ export class ArticleService {
     id: string,
     updateArticleDto: UpdateArticleDto,
   ): Promise<ArticleEntity> {
+    if (updateArticleDto.title) {
+      updateArticleDto.slug = this.getSlug(updateArticleDto.title);
+    }
     return this.articleRepository
       .findByIdAndUpdate(id, updateArticleDto)
       .exec();
@@ -60,6 +66,15 @@ export class ArticleService {
 
   async remove(id: string) {
     return this.articleRepository.findByIdAndRemove(id).exec();
+  }
+
+  private getSlug(title: string): string {
+    // return (
+    //   slugify(title, { lower: true }) +
+    //   '-' +
+    //   ((Math.random() * Math.pow(36, 6)) | 0).toString(36)
+    // );
+    return slugify(title, { lower: true });
   }
 
   async convertArticleEnityToArticleType(
@@ -102,8 +117,6 @@ export class ArticleService {
     const convertedArticle = await this.convertArticleEnityToArticleType(
       article,
     );
-    console.log('--- buildArticleResponse ', { convertedArticle });
-
     return {
       article: convertedArticle,
     };
@@ -116,8 +129,6 @@ export class ArticleService {
       articles.map((el) => this.convertArticleEnityToArticleType(el)),
     );
     const convertedArticles = await convertedArticlesPromise;
-    console.log('--- buildArticlesResponse ', { convertedArticles });
-
     return {
       articles: convertedArticles,
     };
