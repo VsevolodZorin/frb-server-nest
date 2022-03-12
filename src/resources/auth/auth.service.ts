@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { compare } from 'bcryptjs';
@@ -106,6 +107,21 @@ export class AuthService {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    return user;
+  }
+
+  async loginWithGoogle(email: string): Promise<UserEntity> {
+    // TODO сделать нормальный интерфейс IUserFindOptions из объекта
+    const userFindOptions: IUserFindOptions = {
+      __v: 0,
+      createdAt: 0,
+      updatedAt: 0,
+    };
+    const user = await this.userService.findByEmail(email, userFindOptions);
+    if (!user) {
+      //     FORBIDDEN = 403,
+      throw new UnprocessableEntityException('user not found');
+    }
     return user;
   }
 

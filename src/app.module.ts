@@ -96,7 +96,7 @@ export class AppModule implements NestModule {
       })
       .forRoutes(
         {
-          path: 'auth/loginfrb',
+          path: 'auth/loginwithgoogle',
           method: RequestMethod.GET,
         },
         // {

@@ -66,14 +66,12 @@ export class AuthController {
     await this.authService.activate(link);
   }
 
-  @Post('/login')
-  async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
+  @Get('/loginwithgoogle')
+  async loginGoogle(@User('email') email: string, @Res() response: Response) {
     await this.telegramService.sendMessage(
-      `login -> email: ${loginUserDto.email}`,
+      `login with google -> email: ${email}`,
     );
-    console.log('loginUserDto', loginUserDto);
-
-    const user = await this.authService.login(loginUserDto);
+    const user = await this.authService.loginWithGoogle(email);
     const tokenPair = await this.jwtService.generateTokenPair(user);
     response.cookie('refreshToken', tokenPair.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -87,9 +85,23 @@ export class AuthController {
     return response.json(userResponse);
   }
 
-  @Post('/loginfrb')
-  async loginFrb() {
-    return 'loginFrb';
+  @Post('/login')
+  async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
+    await this.telegramService.sendMessage(
+      `login local -> email: ${loginUserDto.email}`,
+    );
+    const user = await this.authService.login(loginUserDto);
+    const tokenPair = await this.jwtService.generateTokenPair(user);
+    response.cookie('refreshToken', tokenPair.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    const userResponse = this.userService.buildUserResponse(
+      user,
+      tokenPair.accessToken,
+    );
+
+    return response.json(userResponse);
   }
 
   @Get('/refresh')
