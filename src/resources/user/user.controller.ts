@@ -37,7 +37,7 @@ export class UserController {
 
   @Patch()
   async updateCurrentUser(
-    @User('_id') currentUserId: string,
+    @User('id') currentUserId: string,
     @Body('user') updateUserDto: UpdateUserDto,
   ): Promise<IUserResponse> {
     const user = await this.userService.updateById(

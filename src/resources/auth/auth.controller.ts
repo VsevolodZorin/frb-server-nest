@@ -35,10 +35,21 @@ export class AuthController {
   //   return this.userService.buildUserResponse(user);
   // }
 
-  @Get('/test')
-  async test() {
-    return 'auth rest';
-    // return this.authService.test();
+  @Post('/info')
+  async info(@User('email') email: string, @Res() response: Response) {
+    const user = await this.userService.findByEmail(email);
+    const tokenPair = await this.jwtService.generateTokenPair(user);
+
+    response.cookie('refreshToken', tokenPair.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    const userResponse = this.userService.buildUserResponse(
+      user,
+      tokenPair.accessToken,
+    );
+
+    return response.json(userResponse);
   }
 
   @Post('/registration')
