@@ -18,6 +18,7 @@ import { SessionService } from '@src/resources/session/session.service';
 import { JwtService } from '@src/services/jwt/jwt.service';
 import { MailService } from '@src/services/mail/mail.service';
 import { IJwtTokenPair } from '@src/services/jwt/types/jwtTokenPair.interface';
+
 @Injectable()
 export class AuthService {
   constructor(

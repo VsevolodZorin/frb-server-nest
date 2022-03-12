@@ -25,6 +25,7 @@ import { join } from 'path';
 import { SkillModule } from './resources/skill/skill.module';
 import { TagModule } from './resources/tag/tag.module';
 import { ArticleModule } from './resources/article/article.module';
+import { ProjectModule } from './resources/project/project.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { ArticleModule } from './resources/article/article.module';
     }),
     TagModule,
     ArticleModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [FirebaseApp],
