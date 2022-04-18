@@ -1,21 +1,30 @@
 if (!process.env.IS_TS_NODE) {
   require('module-alias/register');
 }
+
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as functions from 'firebase-functions';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from '@src/app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
-  await app.listen(4000);
+  const app = await NestFactory.create(AppModule, {
+    cors: { origin: true, credentials: true },
+  });
+  app.use(cookieParser());
+  // app.useGlobalPipes(new ValidationPipe());
+  await app.listen(4000, () => {
+    console.log('server start at port 4000');
+  });
   // app.setGlobalPrefix('api');
   // app.enableCors();
 }
 
 bootstrap();
-//
+
 // const server = express();
 //
 // export const createNestServer = async (expressInstance) => {
