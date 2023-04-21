@@ -1,8 +1,15 @@
 {
   "functions": {
-    "predeploy": [
-      "yarn build"
-    ],
-    "source": "."
+    "predeploy": ["yarn build"],
+    "source": "./",
+    "runtime": "nodejs18",
+
+    "codebase": "default",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ]
   }
 }
